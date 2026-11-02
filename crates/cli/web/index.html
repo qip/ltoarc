@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ltoarc</title>
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <a class="brand" href="#/">
+      <img src="/icon.svg" alt="" width="26" height="26">
+      <span><b>ltoarc</b><small id="host"></small></span>
+    </a>
+    <nav id="nav">
+      <a href="#/" data-nav="overview">Overview</a>
+      <a href="#/library" data-nav="library">Library</a>
+      <a href="#/cartridges" data-nav="cartridges">Cartridges</a>
+      <a href="#/sessions" data-nav="sessions">Sessions</a>
+      <a href="#/browse" data-nav="browse">Browse</a>
+      <a href="#/jobs" data-nav="jobs">Jobs</a>
+      <a href="#/activity" data-nav="activity">Activity <span id="busy" class="dot" hidden></span></a>
+    </nav>
+    <button class="linkish" id="logout" type="button">Log out</button>
+  </aside>
+  <main id="main" tabindex="-1"></main>
+</div>
+<div id="toasts" aria-live="polite"></div>
+</body>
+</html>
