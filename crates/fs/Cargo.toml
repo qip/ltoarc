@@ -1,0 +1,15 @@
+[package]
+name = "ltoarc-fs"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+anyhow = "1.0.104"
+fuser = { version = "0.18.0", default-features = false }
+libc = "0.2.191"
+ltoarc-catalog = { version = "0.1.0", path = "../catalog" }
+ltoarc-format = { version = "0.1.0", path = "../format" }
+serde_bytes = "0.11.19"

@@ -1,0 +1,61 @@
+# On a version tag (v0.1.0, ...): test, build the Linux x86_64 binary, and attach it to the
+# GitHub release of that tag.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    # The oldest supported runner, so the binary needs no newer glibc than 2.35.
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rust toolchain
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+
+      - name: Tag matches the crate version
+        run: |
+          version=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "ltoarc") | .version')
+          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match the crate version $version (Cargo.toml)"
+            exit 1
+          fi
+
+      - name: Test
+        run: cargo test --release --locked --workspace
+
+      - name: Build
+        run: cargo build --release --locked
+
+      - name: Package
+        run: |
+          name="ltoarc-$GITHUB_REF_NAME-x86_64-linux"
+          mkdir -p "dist/$name"
+          cp target/release/ltoarc README.md docs/FORMAT.md LICENSE-MIT LICENSE-APACHE "dist/$name/"
+          tar -C dist -czf "dist/$name.tar.gz" "$name"
+          (cd dist && sha256sum "$name.tar.gz" > "$name.tar.gz.sha256")
+          echo "ASSET=$name" >> "$GITHUB_ENV"
+
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > notes.md <<EOF
+          Linux x86_64 binary; needs glibc 2.35 or later (Ubuntu 22.04, Debian 12 or newer).
+
+              sha256sum -c $ASSET.tar.gz.sha256
+              tar xzf $ASSET.tar.gz
+              sudo install -m 755 $ASSET/ltoarc /usr/local/bin/
+
+          See the README for the \`ltoarcd\` and \`mount.ltoarc\` links and the rest of the setup.
+          EOF
+          gh release create "$GITHUB_REF_NAME" "dist/$ASSET.tar.gz" "dist/$ASSET.tar.gz.sha256" \
+            --verify-tag --title "ltoarc $GITHUB_REF_NAME" --notes-file notes.md --generate-notes

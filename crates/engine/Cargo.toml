@@ -1,0 +1,32 @@
+[package]
+name = "ltoarc-engine"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+anyhow = "1.0.104"
+blake3 = "1.8.7"
+chrono = "0.4.45"
+crossbeam-channel = "0.5.17"
+globset = "0.4.19"
+hex = "0.4.3"
+libc = "0.2.191"
+ltoarc-catalog = { version = "0.1.0", path = "../catalog" }
+ltoarc-device = { version = "0.1.0", path = "../device" }
+ltoarc-format = { version = "0.1.0", path = "../format" }
+ltoarc-scsi = { version = "0.1.0", path = "../scsi" }
+md-5 = "0.11.0"
+ring = "0.17.14"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_bytes = "0.11.19"
+serde_json = "1.0.154"
+tempfile = "3.27.0"
+uuid = { version = "1.26.1", features = ["v4"] }
+xxhash-rust = { version = "0.8.19", features = ["xxh3"] }
+zstd = "0.14.3"
+
+[dev-dependencies]
+tempfile = "3.27.0"
